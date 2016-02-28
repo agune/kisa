@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 ## mysql database bandle function
 __author__ = 'agun'
-import MySQLdb as mdb
+import pymysql as mdb
 
 class DataHandler(object):
     conn = None
 
     def __init__(self, host, user, pw, dbname):
-        self.conn = mdb.connect(host, user, pw, dbname)
+        self.conn = mdb.connect(host=host, user=user, password=pw, db=dbname, charset='utf8mb4')
 
 
     def getUrl(self):
