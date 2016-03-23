@@ -31,6 +31,34 @@ class DataHandler(object):
             rows = cur.fetchall()
             return rows
 
+
+    def getTokenTitle(self, limit):
+        with self.conn:
+            cur = self.conn.cursor()
+            cur.execute("SELECT id, rss_id, term  FROM tokenTitle order by id limit %s", (limit))
+            rows = cur.fetchall()
+            return rows
+
+    def getKeywordIndex(self, term):
+        with self.conn:
+            cur = self.conn.cursor()
+            cur.execute("SELECT id FROM keyword_index WHERE term = %s", (term))
+            rows = cur.fetchall()
+            return rows
+
+    def insertKeywordIndex(self, term):
+        with self.conn:
+            cur = self.conn.cursor()
+            cur.execute("INSERT INTO keyword_index (term)VALUES(%s)", (term))
+
+            return cur.lastrowid
+
+    def insertRelatedDoc(self, rss_id, doc_id):
+        with self.conn:
+            cur = self.conn.cursor()
+            cur.execute("INSERT IGNORE INTO ralated_doc (rss_id, doc_id)VALUES(%s, %s)", (rss_id, doc_id))
+
+
     def insertRssData(self, author, title, link, pubDate, content, url_id):
         with self.conn:
             cur = self.conn.cursor()
@@ -47,6 +75,7 @@ class DataHandler(object):
         with self.conn:
             cur = self.conn.cursor()
             cur.execute("INSERT INTO tokenTitle (rss_id, term)VALUES(%s, %s)", (rssId, term))
+
 
     def insertContentToken(self, rssId, term):
         with self.conn:
