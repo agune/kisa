@@ -36,7 +36,7 @@ vocab = documentUtil.make_vocab(texts)
 docuemnt_term_matrix = documentUtil.get_document_term_matrix(vocab, texts)
 
 ## init LDA model
-model = lda.LDA(n_topics=20, n_iter=1500, random_state=1)
+model = lda.LDA(n_topics=200, n_iter=1500, random_state=1)
 
 #train model
 model.fit(np.asarray(docuemnt_term_matrix))
