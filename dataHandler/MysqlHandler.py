@@ -58,6 +58,11 @@ class DataHandler(object):
             cur = self.conn.cursor()
             cur.execute("INSERT IGNORE INTO ralated_doc (rss_id, doc_id)VALUES(%s, %s)", (rss_id, doc_id))
 
+    def insertRelatedTopic(self, rss_id, topic_id):
+        with self.conn:
+            cur = self.conn.cursor()
+            cur.execute("INSERT IGNORE INTO related_topic (rss_id, topic)VALUES(%s, %s)", (rss_id, topic_id))
+
 
     def insertRssData(self, author, title, link, pubDate, content, url_id):
         with self.conn:
