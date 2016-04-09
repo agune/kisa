@@ -4,8 +4,9 @@
 
 from dataHandler.MysqlHandler import DataHandler
 from analysis.util.DocumentUtil import DocumentUtil
-import numpy as np
-import lda
+from gensim import corpora, models
+import gensim
+
 import os
 dbUser = os.environ["DB_USER"]
 dbPw = os.environ["DB_PW"]
@@ -16,7 +17,7 @@ document = {}
 termList = dataHandler.getTokenTitle(7000)
 
 texts = []      # docuemnt text
-ids = []        # document rss id
+ids = []	# document ids
 for term in termList :
     if term[1] in document :
         document[term[1]].append(term[2])
@@ -29,30 +30,26 @@ for key, item in document.items() :
     texts.append(item)
     ids.append(key)
 
-## manual implement document term matrix and vocabulary
-## TODO IDF & stop word check
-documentUtil = DocumentUtil()
-vocab = documentUtil.make_vocab(texts)
-docuemnt_term_matrix = documentUtil.get_document_term_matrix(vocab, texts)
 
-## init LDA model
-model = lda.LDA(n_topics=200, n_iter=1500, random_state=1)
+# create corpus and dictionary
+dictionary = corpora.Dictionary(texts)
+corpus = [dictionary.doc2bow(text) for text in texts]
 
-#train model
-model.fit(np.asarray(docuemnt_term_matrix))
-topic_word = model.topic_word_
-n_top_words = 8
+# learn lda model
+ldamodel = gensim.models.ldamodel.LdaModel(corpus, num_topics=500, id2word = dictionary, passes=20)
 
-## check init topic model
-vocab2 = lda.datasets.load_reuters_vocab()
-for i, topic_dist in enumerate(topic_word):
-    topic_words = np.array(vocab)[np.argsort(topic_dist)][:-(n_top_words+1):-1]
-    print('Topic {}: {}'.format(i, ' '.join(topic_words)))
+#example
+#print(ldamodel.print_topics(num_topics=20, num_words=7))
+#lda = ldamodel[dictionary.doc2bow(texts[0])]
+#print(lda[0][0])
+#print(ldamodel.print_topic(lda[0][0]))
+#print(texts[0])
 
+
+dataHandler2 = DataHandler("localhost", dbUser, dbPw, "kisa")
 
 #check document topic and related document by topic
-doc_topic = model.doc_topic_
-relate_d = {}
 for i in range(len(texts)):
-    dataHandler.insertRelatedTopic(ids[i], str(doc_topic[i].argmax()))
-    print("{} (top topic: {})".format(texts[i], doc_topic[i].argmax()))
+	lda = ldamodel[dictionary.doc2bow(texts[i])]
+	if lda :
+		dataHandler2.insertRelatedTopic(ids[i], str(lda[0][0]))
