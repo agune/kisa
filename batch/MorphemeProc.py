@@ -13,7 +13,18 @@ morpheme = Morpheme()
 
 rssDataList = dataHandler.getRssdata("0")
 
-def filterToken(var): return len(var) > 2
+
+def isNumber(s):
+    try:
+        float(s)
+        return True
+    except ValueError:
+        return False
+
+def filterToken(var):
+    if len(var) > 2 and isNumber(var) == False :
+        return True
+    return False
 
 
 for rssData in rssDataList :

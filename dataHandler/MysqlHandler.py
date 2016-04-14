@@ -24,6 +24,13 @@ class DataHandler(object):
             rows = cur.fetchall()
             return rows
 
+    def getRssdataByLink(self, link):
+        with self.conn:
+            cur = self.conn.cursor()
+            cur.execute("SELECT id, title, link, pubDate, content, url_id FROM RssData WHERE link = %s", (link))
+            rows = cur.fetchall()
+            return rows
+
     def getRssText(self, is_token):
         with self.conn:
             cur = self.conn.cursor()

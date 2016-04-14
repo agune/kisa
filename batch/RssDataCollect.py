@@ -7,14 +7,13 @@ dbPw = os.environ["DB_PW"]
 
 dataHandler = DataHandler("localhost", dbUser, dbPw, "kisa");
 
-
 def rssFetch(url_id, rssData):
-    dataHandler.insertRssData('',rssData["title"], rssData["link"], rssData["pubDate"], rssData["description"], url_id)
-
+    linkData = dataHandler.getRssdataByLink(rssData["link"])
+    if len(linkData) == 0 :
+        dataHandler.insertRssData('',rssData["title"], rssData["link"], rssData["pubDate"], rssData["description"], url_id)
 
 
 dataCollector = DataCollector();
-
 urlList = dataHandler.getUrl();
 
 for url in urlList:
