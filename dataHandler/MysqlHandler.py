@@ -38,6 +38,12 @@ class DataHandler(object):
             rows = cur.fetchall()
             return rows
 
+    def getStopWord(self, word):
+        with self.conn:
+            cur = self.conn.cursor()
+            cur.execute("SELECT * FROM stop_word WHERE word = %s", (word))
+            rows = cur.fetchall()
+            return rows
 
     def getTokenTitle(self, limit):
         with self.conn:

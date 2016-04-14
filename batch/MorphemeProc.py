@@ -33,13 +33,17 @@ for rssData in rssDataList :
         nouns = morpheme.nouns(rssData[1])
         tokenTitle = list(filter(filterToken, nouns))
         for(item) in tokenTitle:
-            dataHandler.insertTitleToken(rssData[0], item)
+            stopWord = dataHandler.getStopWord(item)
+            if len(stopWord) == 0 :
+                dataHandler.insertTitleToken(rssData[0], item)
 
 
     if(rssData[4] != None and rssData[4] != "" and len(rssData[4]) > 2) :
         nouns = morpheme.nouns(rssData[4])
         tokenContent = list(filter(filterToken, nouns))
         for(item) in tokenContent:
-            dataHandler.insertContentToken(rssData[0], item)
+            stopWord = dataHandler.getStopWord(item)
+            if len(stopWord) == 0 :
+                dataHandler.insertContentToken(rssData[0], item)
 
     dataHandler.updateRssToken(rssData[0], "1")
