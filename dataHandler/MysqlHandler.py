@@ -35,7 +35,7 @@ class DataHandler(object):
     def getTokenTitle(self, limit):
         with self.conn:
             cur = self.conn.cursor()
-            cur.execute("SELECT id, rss_id, term  FROM tokenTitle order by id limit %s", (limit))
+            cur.execute("SELECT id, rss_id, term  FROM tokenTitle order by id desc limit %s", (limit))
             rows = cur.fetchall()
             return rows
 
